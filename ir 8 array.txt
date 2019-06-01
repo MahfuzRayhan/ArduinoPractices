@@ -1,0 +1,25 @@
+if(((d1== HIGH) && (d2 == HIGH) && (d3 == LOW) && (d4== LOW) && (d5== LOW) && (d6== LOW) && (d7 == HIGH) && (d8 == HIGH)) ||
+  ((d1== HIGH) && (d2 == HIGH) && (d3 == HIGH) && (d4== LOW) && (d5== LOW) && (d6== LOW) && (d7 == HIGH) && (d8 == HIGH)) ||
+  ((d1== HIGH) && (d2 == HIGH) && (d3 == LOW) && (d4== LOW) && (d5== LOW) && (d6== HIGH) && (d7 == HIGH) && (d8 == HIGH))){
+    demoforward();
+  }
+  else if(((d1== LOW) && (d2 == LOW) && (d3 == LOW) && (d4== LOW) && (d5== LOW) && (d6== LOW) && (d7 == HIGH) && (d8 == HIGH))||
+  ((d1== LOW) && (d2 == LOW) && (d3 == LOW) && (d4== LOW) && (d5== LOW) && (d6== HIGH) && (d7 == HIGH) && (d8 == HIGH))){
+   demoright(); 
+  }
+  else if(((d1== HIGH) && (d2 == HIGH) && (d3 == LOW) && (d4== LOW) && (d5== LOW) && (d6== LOW) && (d7 == LOW) && (d8 == LOW)) ||
+  ((d1== HIGH) && (d2 == HIGH) && (d3 == HIGH) && (d4== LOW) && (d5== LOW) && (d6== LOW) && (d7 == LOW) && (d8 == LOW))){
+    demoleft();
+  }
+  else if((d1== HIGH) && (d2 == HIGH) && (d3 == LOW) && (d4== LOW) && (d5== HIGH) && (d6== HIGH) && (d7 == HIGH) && (d8 == HIGH)){
+    leftfast();
+  }
+  else if((d1== HIGH) && (d2 == HIGH) && (d3 == HIGH) && (d4== HIGH) && (d5== LOW) && (d6== LOW) && (d7 == HIGH) && (d8 == HIGH)){
+    rightfast();
+  }
+  else if((d1== LOW) && (d2 == LOW) && (d3 == LOW) && (d4== LOW) && (d5== LOW) && (d6== LOW) && (d7 == LOW) && (d8 == LOW)){
+    demostop();
+  }
+  if((d1== HIGH) && (d2 == HIGH) && (d3 == HIGH) && (d4== HIGH) && (d5== HIGH) && (d6== HIGH) && (d7 == HIGH) && (d8 == HIGH)){
+    demoreverse();
+  }

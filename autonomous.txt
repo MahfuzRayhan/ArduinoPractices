@@ -1,0 +1,128 @@
+#define pwmb 5
+#define bin2 6
+#define bin1 7
+#define ain1 8
+#define ain2 9
+#define pwma 10
+#define numberOfSensor 7
+#define threshold_value 500
+#define mostLeft 0
+#define zeroPoint 3000
+#define mostRight 6000
+#define base_speedL 100
+#define base_speedR 112
+#define max_speedL 170
+#define max_speedR 182
+
+float kp = 0.09;
+float kd = 2.7;
+float ki = 0.001;
+int pin[numberOfSensor]={A2,A3,A4,A5,A6,A7,A8};
+int sensor_value[numberOfSensor] = {0};
+int last_error = 0;
+int integral = 0;
+int last_value = 0;
+
+void setup() {
+  pinMode(pwmb,OUTPUT);
+  pinMode(bin2,OUTPUT);
+  pinMode(bin1,OUTPUT);
+  pinMode(ain1,OUTPUT);
+  pinMode(ain2,OUTPUT);
+  pinMode(pwma,OUTPUT);
+  Serial.begin (9600);
+}
+
+void loop() {
+  if(analogRead(A1) > 500) {
+    go(100,100);
+    delay(100);
+    go(-100,100);
+    while(1) {
+      sensor();
+      if((sensor_value[2] == 1) || (sensor_value[3] == 1) || (sensor_value[4] == 1)) {
+        break;
+      }
+    }
+  }
+  
+  else if(analogRead(A9) > 500) {
+    go(100,100);
+    delay(100);
+    go(100,-100);
+    while(1) {
+      sensor();
+      if((sensor_value[2] == 1) || (sensor_value[3] == 1) || (sensor_value[4] == 1)) {
+        break;
+      }
+    }
+  }
+  
+  else
+    pid();
+}
+
+void pid() {
+  int error,left,right;
+  error = sensor() - zeroPoint;
+//  Serial.println(error);
+  integral += error;
+  int derivative = error - last_error;
+  last_error = error;
+  error = kp*error + kd*derivative + ki*integral;
+  left=base_speedL+error;
+  right=base_speedR-error;
+  left=left>max_speedL?max_speedL:left;
+  left=left<-max_speedL?-max_speedL:left;
+  right=right>max_speedR?max_speedR:right;
+  right=right<-max_speedR?-max_speedR:right;
+//  Serial.print(left);
+//  Serial.print("  ");
+//  Serial.println(right);
+  go(left,right);
+//  go(130,142);
+}
+
+int sensor() {
+  int w_value[numberOfSensor] = {0};
+  int sum = 0, w_sum = 0, t, average = 0;
+//  Serial.print(analogRead(A1));
+//  Serial.print("  ");
+  for(int i = 0; i < numberOfSensor; i++) {
+    sensor_value[i] = (analogRead(pin[i]) > threshold_value ? 1 : 0);
+//    Serial.print(sensor_value[i]);
+//    Serial.print("  ");
+    sum += sensor_value[i];
+    w_value[i] = i*sensor_value[i]*1000;
+    w_sum += w_value[i];
+  }
+//  Serial.print(analogRead(A9));
+//  Serial.println();
+  if(sum == 0) {
+    if(last_value > zeroPoint)
+      average = mostRight;
+    else
+      average = mostLeft;
+  }
+  else {
+    average= w_sum/sum;
+    last_value=average;
+  }
+  return average;
+}
+
+int go(int x,int y) {
+  bool l = 1, r = 1;
+  if(x < 0){
+    r = !r;
+  }
+  if(y < 0){
+    l = !l;
+  }
+  analogWrite(pwma,abs(x));
+  digitalWrite(ain1,!l);
+  digitalWrite(ain2,l);
+  analogWrite(pwmb,abs(y));
+  digitalWrite(bin1,r);
+  digitalWrite(bin2,!r);  
+}
